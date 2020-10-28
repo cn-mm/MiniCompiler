@@ -1,3 +1,14 @@
+// =======================================================================================================
+// PPL ASSIGNMENT 1 2020
+// GROUP NUMBER 47
+// ANUSHKA JAIN 2017B1A70975P
+// KUMAR SAURABH 2017B3A70626P
+// MANSI MITTAL 2017B1A70991P
+// RUCHI BATRA 2017B3A70629P
+// =======================================================================================================
+
+
+
 // Backtracking algo 
 // Create parse tree 
 #include <stdlib.h>
@@ -76,7 +87,7 @@ bool match(Token_s * lookahead , TreeNode * tos)
 int createParseTree()
 {
     char* grammar_file = "grammar.txt";
-	Grammar* grm = load_grammar_from_text_file(grammar_file);
+	Grammar* grm = readGrammar(grammar_file);
 	print_grammar( grm);
     tokenstream * s = tokenizeSourceCode("Test_Cases/Sample_test1.txt");
     

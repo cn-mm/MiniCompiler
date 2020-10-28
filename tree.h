@@ -1,9 +1,12 @@
-//This is an n-ary tree 
-// with nodes containing nonterminal symbol, link to children, the type of the subexpression or variable 
-// corresponding to the subtree of the node. The parse tree is created using the grammar and input token stream. 
-// Once the parse is created, it is traversed to collect type expression information and populating its non-leaf nodes with accumulated information appropriately. 
-// Parse tree nodes are implemented using variant records, 
-//which has its variant part implemented using union data type for storing the type expressions.
+// =======================================================================================================
+// PPL ASSIGNMENT 1 2020
+// GROUP NUMBER 47
+// ANUSHKA JAIN 2017B1A70975P
+// KUMAR SAURABH 2017B3A70626P
+// MANSI MITTAL 2017B1A70991P
+// RUCHI BATRA 2017B3A70629P
+// =======================================================================================================
+
 
 #include <stdio.h>
 #include <stdlib.h>

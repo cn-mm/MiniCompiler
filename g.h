@@ -1,3 +1,13 @@
+// =======================================================================================================
+// PPL ASSIGNMENT 1 2020
+// GROUP NUMBER 47
+// ANUSHKA JAIN 2017B1A70975P
+// KUMAR SAURABH 2017B3A70626P
+// MANSI MITTAL 2017B1A70991P
+// RUCHI BATRA 2017B3A70629P
+// =======================================================================================================
+
+
 #include <stdio.h>
 #include <stdlib.h>
 #include "gdef.h"
@@ -11,8 +21,8 @@
 
 //Mappings of ENUM to String
 
-Grammar* load_grammar_from_text_file(char* grammar_text_file);
 
+Grammar* readGrammar(char* grammar_text_file);
 
 Grammar* initialize_grammar();
 Symbol_list* initialize_symbols_list();
