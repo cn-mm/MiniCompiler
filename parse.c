@@ -51,7 +51,7 @@ void push_rule_reverse_ruchi(Rule * rule, AuxStack * as, MainStack * ms, Childre
         while(!auxstackisEmpty(as))
         {
             TreeNode * temp2=pop_as(as);
-            if(temp2->term_nonterm){
+            if(temp2->term_nonterm == 0){
                 printf("%s \n", TerminalMapPar[temp2->type.terminal]);
             }
             else{

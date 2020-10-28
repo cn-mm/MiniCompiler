@@ -60,7 +60,7 @@
 <expression_bool> ===> <term_bool> <op_no_op_or>
 <op_no_op_or> ===> OR <expression_bool>
 <op_no_op_or> ===> EPSILON
-<term_bool> ===> <factor_bool> AND <term_bool> 
-<op_no_op_and> ===> AND <term_bool>
+<term_bool> ===> <factor_bool> <op_no_op_and>
+<op_no_op_and> ===> AND <factor_bool>
 <op_no_op_and> ===> EPSILON
 <factor_bool> ===> ID
