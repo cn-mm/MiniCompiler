@@ -21,14 +21,7 @@ ParseTree * iniatilizeTree(){
     Symbol_node_type t;
     t.nonterminal = program;
     parsetree->root = initialize_TreeNode(NULL, 1, 1, t);
-    // parsetree->root->parent= NULL;
-    // parsetree->root->child= NULL;
-    // parsetree->root->next= NULL;
-    // parsetree->root->rule_no = 1;
     parsetree->root->height = 0;
-    // parsetree->root->term_nonterm = 0;
-    // parsetree->root->type.nonterminal = PROGRAM;
-    // printf("Returing parsetree \n ");
     return parsetree;    
 }
 
@@ -48,7 +41,7 @@ TreeNode* initialize_TreeNode(TreeNode * parent, int rule_no, int term_nonterm, 
         treenode->type.nonterminal = type.nonterminal;
     }
     if(parent != NULL){
-    treenode->height = parent->height++;}
+    treenode->height = parent->height + 1;}
 
     // printf("initialize_TreeNode exiting %d \n", type);
     return treenode;

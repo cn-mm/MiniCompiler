@@ -90,7 +90,7 @@ int createParseTree()
 
     TreeNode* start = initialize_TreeNode(NULL,1, 0, start_type); // Pushed dollar, a terminal
     TreeNode* program = initialize_TreeNode(NULL, 1, 1, program_start); // Push program, a non terminal 
-
+    program->height = 0;
     //stacks init 
     MainStack* MS = initialize_main_stack();
     AuxStack* AS = initilaize_aux_stack();
@@ -229,16 +229,16 @@ void preordertraversal(TreeNode * root)
         printf("\n  1. Symbol name : %s",TerminalMapPar[root->type.terminal]);
         printf("\n  2. Terminal or NonTerminal :  Terminal");
         printf("\n  3. Lexeme : %s", root->tok.lexeme); // problem 
-        printf("\n  4. Line No. : %d \n", root->tok.line_number);
-        // printf("\n  5. Depth : %d \n", root->height);
+        printf("\n  4. Line No. : %d ", root->tok.line_number);
+        printf("\n  5. Depth : %d \n", root->height);
     }
     else
     {
         printf("\n NON TERMINAL");
         printf("\n  1. Symbol name : %s",NonTerminalMapPar[root->type.nonterminal]);
         printf("\n  2. Terminal or NonTerminal :  NonTerminal ");
-        printf("\n  3. GrammarRuleNo : %d \n",root->rule_no);
-        // printf("\n  4. Depth : %d \n ",root->height);
+        printf("\n  3. GrammarRuleNo : %d ",root->rule_no);
+        printf("\n  4. Depth : %d \n ",root->height);
         TreeNode*temp = NULL ;
         if(root->child!= NULL){
         temp= root->child->head;}
