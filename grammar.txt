@@ -6,7 +6,7 @@
 <stmt> ===> <decl>
 <stmt> ===> <assign>
 <decl> ===> DEC <declaration>
-<declaration> ===> ID COLON <type> SEMICOLON
+<declaration> ===> ID COLON <type> 
 <declaration> ===> LIST OF VARIABLES <var_list> COLON <type>
 <var_list> ===> ID <remaining_var>
 <remaining_var> ===> <var_list>
