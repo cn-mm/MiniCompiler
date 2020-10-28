@@ -1,0 +1,29 @@
+struct node 
+{
+    int line_number;
+    char token_name[50];
+    char * lexeme;
+    struct node * next;
+}; 
+typedef struct node Node;
+
+Line line_number
+token_name
+lexeme 
+and pointer to next 
+
+
+
+typedef enum{
+	PROGRAM, SZ, OP, CL, COP, CCL, SQOP, SQCL, DOTS, EPSILON, COLON, SEMICOLON, ID, IDB, NUM, INT, BOOLEAN, REAL, ARRAY, JAGGED, DEC, LIST, OF, VARIABLES, R, VALUES, EQUALS, PLUS, MINUS, MUL, DIV, AND, OR,DOLLAR 
+}Tokentype;
+
+
+char* TerminalMap[] = {
+	"PROGRAM", "SZ", "OP", "CL", "COP", "CCL", "SQOP", "SQCL", "DOTS", "EPSILON", "COLON", "SEMICOLON", "ID", "IDB", "NUM", "INT", "BOOLEAN", "REAL", "ARRAY", "JAGGED", "DEC", "LIST", "OF", "VARIABLES", "R", "VALUES", "EQUALS", "PLUS", "MINUS", "MUL", "DIV", "AND", "OR","DOLLAR"
+};
+
+
+char* Type[] = {
+	"program", "size", "(", ")", "{", "}", "[", "]", "...", "EPSILON", ":", ";", "ID", "IDB", "NUM", "integer", "boolean", "real", "array", "jagged", "declare", "list", "of", "variables", "R1", "values", "=", "+", "-", "*", "/", "&&&", "|||","$"
+};
