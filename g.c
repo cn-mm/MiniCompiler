@@ -62,7 +62,7 @@ Grammar* load_grammar_from_text_file(char* grammar_text_file){
 		}
 		
 		//Load a new rule
-        printf("\n Loading rule %d", i);
+        // printf("\n Loading rule %d", i);
         i++;
 		char* non_term_str = (char*)malloc(sizeof(char)*MAX_SYMBOL_SIZE);
 		int i = 0;

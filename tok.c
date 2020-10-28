@@ -96,7 +96,6 @@ void get_token(Token_s * temp )
 
 int findfromTerminalMaptoTerminal(char* str){
 	//Terminal
-        // printf(" \n FMMMM %s \n ", str);
 		for(int i=0;i<TOTAL_NUM_TERMINALS;i++){
             // printf("\n Inside term map i is %d : ",i);
 			if(strcmp(str,TerminalMapTok[i])==0){
@@ -107,7 +106,6 @@ int findfromTerminalMaptoTerminal(char* str){
 
 void findmapping(Token_s * st){
     // removeChar(st->lexeme, '\n');
-    // printf("Lexeme is %s \n ", st->lexeme);
     for(int i = 0; i< TOTAL_NUM_TERMINALS; i++){
         // printf("\n Type[i] is : %s and lexeme is : %s \n", Type[i], st->lexeme);
         if(!strcmp(TypeTok[i], st->lexeme)){ // Type and lexeme will be of the same kind 
@@ -126,15 +124,7 @@ void findmapping(Token_s * st){
         }
         }
     }
-    // if(st->token_name == "IDENTIFIERS" ){
-    //     printf("%s \n ", st->token_name);
-    //     if(isInt(st->lexeme)){
-    //         st->type = NUM;
-    //     }
-    //     else{
-    //         st->type = ID;
-    //     }
-    // }
+
 }
 
 
@@ -234,6 +224,7 @@ int isInt(char* s)
 void printlinklist(struct token_s * temp)
 {
 	struct token_s * temp2=temp->next;
+    printf("\n ====================Program Token Stream=====================\n");
     while(temp)
     {
         printf("\n");
@@ -284,25 +275,10 @@ tokenstream * tokenizeSourceCode(char* sourceCode)
 
         printlinklist(s->head);
 
-        // printf("\n And for the tail: \n ");
-        // printf(" line number : %d ",s->tail->line_number);
-        // printf(" lexeme : %s ",s->tail->lexeme);
-        // printf(" tokenname : %s \n",s->tail->token_name);
-        
-
     return s;
 }
 
 
 // int main(){
 //     tokenstream * s = tokenizeSourceCode("Test_Cases/Sample_test1.txt");
-
-//     // printf("Trying out stuff");
-//     // Token_s s1, s2;
-//     // s1.lexeme = "hdb";
-//     // s1.line_number = 8;
-//     // s1.next = NULL;
-//     // strcpy(s1.token_name, "KEY");
-
-    
 // }

@@ -9,15 +9,7 @@
 // #include "g.h"
 // #include "stack.h"
 #include "parse.h"
-// bool auxstackisEmpty(AuxStack * as)
-// {
-//     if(as->as_list->head == NULL){
-//         return true;
-//     }
-//     else return false;
-// }
 
-// declaring separately to avoid multiple dec, initially declared in g.c
 char* TerminalMapPar[] = {
 	"PROGRAM", "SZ", "OP", "CL", "COP", "CCL", "SQOP", "SQCL", "DOTS", "EPSILON", "COLON", "SEMICOLON", "ID", "IDB", "NUM", "INT", "BOOLEAN", "REAL", "ARRAY", "JAGGED", "DEC", "LIST", "OF", "VARIABLES", "R", "VALUES", "EQUALS", "PLUS", "MINUS", "MUL", "DIV", "AND", "OR","DOLLAR"
 };
@@ -29,13 +21,13 @@ char* NonTerminalMapPar[] = {
 
 void push_rule_reverse_ruchi(Rule * rule, AuxStack * as, MainStack * ms, Children * children )
     { 
-        printf("Inside push rule reverse \n ");
+        // printf("Inside push rule reverse \n ");
 
-        printf("For aux stack \n");
+        // printf("For aux stack \n");
         TreeNode*temp=children->head;
         if(temp==NULL)
         	return;
-        printf("No of siblings %d", children->no_siblings);
+        // printf("No of siblings %d", children->no_siblings);
         while(!auxstackisEmpty(as))
         {
             TreeNode* temp1=pop_as(as);
@@ -47,36 +39,30 @@ void push_rule_reverse_ruchi(Rule * rule, AuxStack * as, MainStack * ms, Childre
             push_as(as,temp);
             temp=temp->next;
         }
-        printf("For main stack \n");
+        // printf("For main stack \n");
         while(!auxstackisEmpty(as))
         {
             TreeNode * temp2=pop_as(as);
-            if(temp2->term_nonterm == 0){
-                printf("%s \n", TerminalMapPar[temp2->type.terminal]);
-            }
-            else{
-                printf("%s \n", NonTerminalMapPar[temp2->type.nonterminal]);
-            }
+            // if(temp2->term_nonterm == 0){
+            //     printf("%s \n", TerminalMapPar[temp2->type.terminal]);
+            // }
+            // else{
+            //     printf("%s \n", NonTerminalMapPar[temp2->type.nonterminal]);
+            // }
             push_ms(ms,temp2);
         }
-        //TreeNode * tos = topofMainStack(ms);
         
-        //printf("Tos is : %s, height is %d \n", TerminalMapPar[tos->type.terminal], tos->height);
-        // TreeNode * temp = pop_ms(ms);
-        // TreeNode * tos1 = topofMainStack(ms);
-        // printf("Tos is : %s\n", TerminalMapPar[tos1->type.terminal]);
     }	    
 
 
 bool match(Token_s * lookahead , TreeNode * tos)
 {
-    // printf("In here \n");
+
     if( lookahead->type==tos->type.terminal ) // only when terminal 
     {
         tos->tok = *lookahead;        
         tos->tok.lexeme=lookahead->lexeme;
         tos->tok.line_number=lookahead->line_number;
-        // tos->tok.token_name=lookahead->token_name;
         strcpy(tos->tok.token_name, lookahead->token_name);
         tos->tok.type=lookahead->type;
 
@@ -95,12 +81,7 @@ int createParseTree()
     tokenstream * s = tokenizeSourceCode("Test_Cases/Sample_test1.txt");
     
     Token_s * token_stream_pointer = s->head; // points to current location in the token stream 
-    Token_s * token_stream_pointer_prev = s->head; // for keeping tabs 
     
-    char* start_nt = "program"; //use??
-    ParseTree *PTree; 
-    PTree = iniatilizeTree(); // we have pointer to the root 
-    // printf("After initiaise Tree \n");
     Symbol_node_type start_type;
     start_type.terminal = DOLLAR;
 
@@ -113,15 +94,13 @@ int createParseTree()
     //stacks init 
     MainStack* MS = initialize_main_stack();
     AuxStack* AS = initilaize_aux_stack();
-    // printf("Stacks initilised \n ");
     
-    // WORKS TILL HERE 
-    TreeNode * temp = NULL;
+    // Let the pushing and popping begin 
     push_ms(MS, start);
     push_ms(MS,program);
     parsing(MS, AS, grm, token_stream_pointer);
-    if(program->child==NULL)
-    	printf("It is NULL");
+    // if(program->child==NULL)
+    // 	printf("It is NULL");
     preordertraversal(program);
      
     return 0;
@@ -133,10 +112,10 @@ bool parsing(MainStack * ms, AuxStack * as, Grammar * grm, Token_s * lookahead)
     {
     	
     	TreeNode * tos = topofMainStack(ms);
-    	if(tos->term_nonterm==0)
-        	printf("\n Top of the stack is %s",TerminalMapPar[tos->type.terminal]);
-        else
-        	printf("\nTop of the stack is %s",NonTerminalMapPar[tos->type.nonterminal]);
+    	// if(tos->term_nonterm==0)
+        // 	printf("\n Top of the stack is %s",TerminalMapPar[tos->type.terminal]);
+        // else
+        // 	printf("\nTop of the stack is %s",NonTerminalMapPar[tos->type.nonterminal]);
         TreeNode * temp;
         
 
@@ -146,7 +125,7 @@ bool parsing(MainStack * ms, AuxStack * as, Grammar * grm, Token_s * lookahead)
 		{
 		    if(match(lookahead,tos))
 		    {
-			printf("\n lookahead %s", lookahead->lexeme);
+			// printf("\n lookahead %s", lookahead->lexeme);
 		        lookahead=lookahead->next;
 		        temp = pop_ms(ms);
 		        
@@ -162,15 +141,15 @@ bool parsing(MainStack * ms, AuxStack * as, Grammar * grm, Token_s * lookahead)
 		else
 		{
 			
-			printf("Encounter DOolarrrrrrr");
+			printf("DOLLAR FOUND \n");
 			if(lookahead==NULL)
 			{
-				printf("Returneddddddddddd");
+				printf("RETURN \n");
 				return true;
 			}
 			else
 			{
-				printf(" The input source code has not matched");
+				printf("ERROR: Check input source code");
                     		return false;
 			}
 		}
@@ -180,15 +159,11 @@ bool parsing(MainStack * ms, AuxStack * as, Grammar * grm, Token_s * lookahead)
 
         else
         {
-
-		printf("\n enter parsing");
-            
+		    // printf("\n Enter parsing");
             int i = tos->type.nonterminal; // will always be a non terminal CHECK &&&&&&&&&&&&&&&&&&&&&&&&&&&&
-
-	    Rules * rules = grm->rules[i];
-        
-	    // traverse all rules.
-	    Rule * rule = rules->head;
+            Rules * rules = grm->rules[i];
+            // traverse all rules.
+            Rule * rule = rules->head;
 
 
     	    for(int j = 0; j<rules->length; j++)
@@ -196,46 +171,41 @@ bool parsing(MainStack * ms, AuxStack * as, Grammar * grm, Token_s * lookahead)
 		    TreeNode * parent =tos;
 		    TreeNode * nothing = pop_ms(ms);
         	TreeNode * popUntil= topofMainStack(ms);
-            printf("Rule no. %d \n", rule->rule_no);
 		    Children * children = makeChildList(parent, rule);
 		    Token_s* temp_look=lookahead;
-		printf("\n Rule No. %d \n ", i);
-		push_rule_reverse_ruchi(rule, as, ms, children);
+		    push_rule_reverse_ruchi(rule, as, ms, children);
 		
-		bool ruleWorks = parsing(ms, as, grm, temp_look);
-		if(!ruleWorks)
-		{ 
-		    while(popUntil != topofMainStack(ms)){
-		        TreeNode * nothing1 = pop_ms(ms);
-		    }
-		    push_ms(ms, parent);
-		    deallocateChildren(children);
-		    
-		}
-		else{
-			parent->child = children;
-		        printf("RULE WORKED \n");
-                printf("    PARENT : %s \n ", NonTerminalMapPar[parent->type.nonterminal]);
-                if(parent->child != NULL){
-                    if(parent->child->head != NULL){
-                    TreeNode * fc = parent->child->head;
-                    fc->term_nonterm == 0? printf("     FC : %s \n ",TerminalMapPar[fc->type.terminal]) : printf("     FC : %s \n ",NonTerminalMapPar[fc->type.nonterminal]);
-                    } }
-
-		    
+            bool ruleWorks = parsing(ms, as, grm, temp_look);
+            if(!ruleWorks)
+            { 
+                while(popUntil != topofMainStack(ms)){
+                    TreeNode * nothing1 = pop_ms(ms);
+                }
+                push_ms(ms, parent);
+                deallocateChildren(children);
+                
+            }
+            else{
+			    parent->child = children;
+		        // printf("RULE WORKED \n");
+                // printf("    PARENT : %s \n ", NonTerminalMapPar[parent->type.nonterminal]);
+                // if(parent->child != NULL){
+                //     if(parent->child->head != NULL){
+                //     TreeNode * fc = parent->child->head;
+                //     fc->term_nonterm == 0? printf("     FC : %s \n ",TerminalMapPar[fc->type.terminal]) : printf("     FC : %s \n ",NonTerminalMapPar[fc->type.nonterminal]);
+                //     } }
 		    return true;
 		}
 		//move rule 
 		rule = rule->next;
 
 	    }
-	    //printf("Returning false \n");
 	    return false;
 
     	}
     	if(lookahead==NULL)
     	{
-    		printf("END OF TOKENSTREAM \n");
+    		printf("======================END OF TOKENSTREAM================= \n");
     		return true;
     	}
 
@@ -256,17 +226,19 @@ void preordertraversal(TreeNode * root)
     if(root->term_nonterm==0)
     {
         printf("\n TERMINAL");
-        printf("\n  The symbol name : %s",TerminalMapPar[root->type.terminal]);
-        printf("\n  Terminal or NonTerminal :  Terminal");
-        printf("\n  Lexeme : %s", root->tok.lexeme); // problem 
-        printf("\n  Line No. : %d \n", root->tok.line_number);
+        printf("\n  1. Symbol name : %s",TerminalMapPar[root->type.terminal]);
+        printf("\n  2. Terminal or NonTerminal :  Terminal");
+        printf("\n  3. Lexeme : %s", root->tok.lexeme); // problem 
+        printf("\n  4. Line No. : %d \n", root->tok.line_number);
+        // printf("\n  5. Depth : %d \n", root->height);
     }
     else
     {
         printf("\n NON TERMINAL");
-        printf("\n  The symbol name : %s",NonTerminalMapPar[root->type.nonterminal]);
-        printf("\n  Terminal or NonTerminal :  NonTerminal ");
-        printf("\n  GrammarRuleNo : %d \n ",root->rule_no);
+        printf("\n  1. Symbol name : %s",NonTerminalMapPar[root->type.nonterminal]);
+        printf("\n  2. Terminal or NonTerminal :  NonTerminal ");
+        printf("\n  3. GrammarRuleNo : %d \n",root->rule_no);
+        // printf("\n  4. Depth : %d \n ",root->height);
         TreeNode*temp = NULL ;
         if(root->child!= NULL){
         temp= root->child->head;}
