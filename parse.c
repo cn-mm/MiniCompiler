@@ -89,7 +89,7 @@ int createParseTree()
     char* grammar_file = "grammar.txt";
 	Grammar* grm = readGrammar(grammar_file);
 	print_grammar( grm);
-    tokenstream * s = tokenizeSourceCode("Test_Cases/Sample_test1.txt");
+    tokenstream * s = tokenizeSourceCode("Test_Cases/t4.txt");
     
     Token_s * token_stream_pointer = s->head; // points to current location in the token stream 
     
