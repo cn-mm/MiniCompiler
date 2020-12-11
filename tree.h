@@ -35,7 +35,7 @@ typedef struct treenode{
     struct treenode * parent;
     struct treenode * next; // points to its siblings 
     int term_nonterm;
-    Symbol_node_type type; // Terminal or non Terminal 
+    Type_Node type; // Terminal or non Terminal 
     Token_s tok; // has line number, token name (Keyword, Op, Symbol) and lexeme (;, }, var, etc), anything that appears in the program
     // tok will be all zeroes and nulls if not a LEAF NODE  
     Children * child;
@@ -54,14 +54,14 @@ typedef struct tree{
 //initialise tree
 ParseTree * iniatilizeTree();
 // initialise tree node 
-TreeNode* initialize_TreeNode(TreeNode * parent, int rule_no, int term_nonterm, Symbol_node_type type);
+TreeNode* initialize_TreeNode(TreeNode * parent, int rule_no, int term_nonterm, Type_Node type);
 // add child 
-Children * makeChildList(TreeNode* parent, Rule* rule);
+Children * makeChildList(TreeNode* parent, GrmRule* grm_rule);
 // 
 Children* initialize_children();
 
 void printTreeNode(TreeNode *tn);
 void printParseTree(ParseTree *t);
 
-// TreeNode * TreeNodeLinkedList(Rule * rule);
+// TreeNode * TreeNodeLinkedList(GrmRule * grm_rule);
 void deallocateChildren(Children * children);

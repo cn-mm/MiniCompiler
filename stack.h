@@ -67,15 +67,13 @@ void push_as(AuxStack * as, TreeNode * treenode);
 // pop
 TreeNode* pop_ms(MainStack * ms);
 TreeNode* pop_as(AuxStack * as);
+
 // pop n elements 
 void pop_n(MainStack * ms, int poppin);
 void pop_all_as(AuxStack * as);
 
-// check if stack over
-int isTopDOLLAR(MainStack* ms);
-
 // push from aux stack to main 
-void push_rule_reverse(Rule * rule, AuxStack * as, MainStack *ms);
+void push_rule_reverse(GrmRule * grm_rule, AuxStack * as, MainStack *ms);
 
 // return top of stack;
 TreeNode * topofMainStack(MainStack * ms);

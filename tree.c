@@ -28,7 +28,7 @@ ParseTree * iniatilizeTree(){
     parsetree->next = NULL;
 
     // alt
-    Symbol_node_type t;
+    Type_Node t;
     t.nonterminal = program;
     parsetree->root = initialize_TreeNode(NULL, 1, 1, t);
     parsetree->root->height = 0;
@@ -36,7 +36,7 @@ ParseTree * iniatilizeTree(){
 }
 
 // initialise tree node 
-TreeNode* initialize_TreeNode(TreeNode * parent, int rule_no, int term_nonterm, Symbol_node_type type){
+TreeNode* initialize_TreeNode(TreeNode * parent, int rule_no, int term_nonterm, Type_Node type){
     // printf("Tree Node init \n");
     TreeNode * treenode = (TreeNode *)malloc(sizeof(TreeNode));
     treenode->parent = parent;
@@ -58,15 +58,15 @@ TreeNode* initialize_TreeNode(TreeNode * parent, int rule_no, int term_nonterm, 
     
 }
 // add child 
-// push the symbols corresponding to the entire rule once it is decided that it fits
-Children * makeChildList(TreeNode* parent, Rule* rule){
+// push the symbols corresponding to the entire grm_rule once it is decided that it fits
+Children * makeChildList(TreeNode* parent, GrmRule* grm_rule){
     
     // printf("\n PARENT FOR WHICH CHILDREN LIST CREATED : \n ");
     // printf("%s \n", NonTerminalMapTree[parent->type.nonterminal]);
-    parent->rule_no = rule->rule_no;
+    parent->rule_no = grm_rule->rule_no;
 
-    Symbol_list* symbols = rule->symbols;
-	Symbol_node* temp = symbols->head;
+    Type_Node_list* symbols = grm_rule->symbols;
+	Type_Sym_Node* temp = symbols->head;
 
     Children* ch = malloc(sizeof(Children));
     // ch->head = parent->child->head;
@@ -76,20 +76,20 @@ Children * makeChildList(TreeNode* parent, Rule* rule){
     TreeNode* prev; // traverses children 
     //i = ch->head;
 
-    // all sumbols in rule have to be pushed 
+    // all sumbols in grm_rule have to be pushed 
     for(int k = 0; k < symbols->length; k++){
         // printf("Inside for loop of make child  \n");
         TreeNode * to_be_added;
         if(temp->term_or_nonterm == 0 ){
         	if(temp->type.terminal==EPSILON)
         		return ch;
-            Symbol_node_type type;
+            Type_Node type;
             type = temp->type;
             to_be_added = initialize_TreeNode(parent, parent->rule_no,0, type);
         }
         else{
             
-            Symbol_node_type type;
+            Type_Node type;
             type = temp->type;
             to_be_added = initialize_TreeNode(parent, parent->rule_no,1, type);
             // printf("CHILD : %s \n", NonTerminalMapTree[to_be_added->type.nonterminal]);
@@ -168,7 +168,7 @@ void printTreeNode(TreeNode * tn){
  Type expression stored in the corresponding node (if non-leaf)
  Name of lexeme (if leaf node)
  Line number (if leaf node)
- Grammar rule applied for expansion of this node while parsing (if non leaf)
+ Grammar grm_rule applied for expansion of this node while parsing (if non leaf)
  Depth of node (root of the parse tree at depth 0)
 */
 void printParseTree(ParseTree *t){

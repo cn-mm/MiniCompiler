@@ -19,7 +19,7 @@
 
 
 
-//Mappings of ENUM to String
+//Mappings of ENUM to String for all tokens in same order as enum def 
 char* TerminalMap[] = {
 	"PROGRAM", "SZ", "OP", "CL", "COP", "CCL", "SQOP", "SQCL", "DOTS", "EPSILON", "COLON", "SEMICOLON", "ID", "IDB", "NUM", "INT", "BOOLEAN", "REAL", "ARRAY", "JAGGED", "DEC", "LIST", "OF", "VARIABLES", "R", "VALUES", "EQUALS", "PLUS", "MINUS", "MUL", "DIV", "AND", "OR","DOLLAR"
 };
@@ -30,206 +30,192 @@ char* NonTerminalMap[] = {
 
 
 //Loads grammar from text file 
+// Grammar in grammar.txt 
 Grammar* readGrammar(char* grammar_text_file){
 
-	int next_rule_no = 1;
-
-	FILE* input = fopen(grammar_text_file, "r");
-    printf("Loaded");
-	if(input==NULL){
-		fprintf(stderr, "Error Opening Grammar File\n");
+	FILE* grammarfile = fopen(grammar_text_file, "r");
+    // printf("Loaded from grammar.txt \n");
+	if(grammarfile==NULL){
+		printf("ERROR: Cannot open Grammar file \n");
 		return NULL;
 	}
 
-	int end_of_file = 0;
+	int next_rule_no = 1;
+	int eof = 0;
 
-	Grammar* grm = initialize_grammar();
-    printf("\n Init");
+	//Initialising grammar data structure 
+	Grammar* grm = init_grm();
+    // printf("\n Init");
+	
+	char c;
 
-	char ch;
-    int i =1;
-	while(1){
+	while(!eof){
 
-		if(end_of_file==1)
-			return grm;
-
-		//Waiting for LHS of a rule
-		while((ch = fgetc(input))!='<'){
-			//If no new rule is available
-			if(ch==EOF){
+		//Getting LHS of a grm_rule
+		while((c = fgetc(grammarfile))!='<'){
+			//If no new grm_rule is available
+			if(c==EOF){
 				return grm;
 			}
 		}
 		
-		//Load a new rule
-        // printf("\n Loading rule %d", i);
-        i++;
-		char* non_term_str = (char*)malloc(sizeof(char)*MAX_SYMBOL_SIZE);
+        // printf("\n Loading grm_rule %d", i);
+		char* lhs_grm_rule = (char*)malloc(sizeof(char)*MX_NODE_SIZE);
 		int i = 0;
-		while((ch = fgetc(input))!='>'){
-			non_term_str[i++] = ch;
+		c = fgetc(grammarfile);
+		while(c!='>'){
+			lhs_grm_rule[i] = c;
+			c = fgetc(grammarfile);
+			i++;
 		}
-		non_term_str[i] = '\0';
+		lhs_grm_rule[i] = '\0';
 
 
-		//Load LHS of the rule -- the corresponding enum
-		NonTerminal non_term  =  find(non_term_str,1);
-		//Now look for RHS of the rule
-		Rule* new_rule = initialize_rule(&next_rule_no);
-		Symbol_list* list = initialize_symbols_list();
-		Symbol_node* curr_node = list->head;
+		//Load LHS of the grm_rule 
+		NonTerminal non_term  =  assign_sym(lhs_grm_rule,1); // assign_sym maps enum to its string using NonTerminalMap
+		//Find corresponding RHS for non terminal 
+		GrmRule* new_rule = init_rule(&next_rule_no);
+		Type_Node_list* list = init_type_node_list();
+		Type_Sym_Node* curr_node = list->head;
 
-		while(1){
-			if(end_of_file==1)
-				break;
+		while(!eof){
 
-			ch = fgetc(input);
-
-			while(ch==' '|| ch == '\t' || ch== '=' || ch== '>'){
-				ch = fgetc(input);
+			c = fgetc(grammarfile);
+			
+			// Ignore these characters 
+			while(1){
+			if(c!=' '&& c!= '=' &&  c != '\t' && c!= '>'){
+				break;	
+			}
+			else
+			{
+				c = fgetc(grammarfile);
+			}
+			
 			}
 
-			//For new line, new rule begins
-			if(ch == '\n')
+			// New line, new rule
+			if(c == '\n')
 				break;
 
-			//If EOF, notify not to read further for new rules
-			else if(ch == EOF){
-				end_of_file = 1;
+			//Break if EOF
+			else if(c == EOF){
+				eof = 1;
 				break;
 			}
-
-			else if(ch>='A'&&ch<='Z' || ch=='e'){
-				
-				char* term_str = (char*)malloc(sizeof(char)*MAX_SYMBOL_SIZE);
+			else if (isalpha(c) && !(c>='a' && c<='z')){
+			
+				// Reading terminals 
+				char* terms = (char*)malloc(sizeof(char)*MX_NODE_SIZE);
 				int i = 0;
-				term_str[i++] = ch;
-				ch = fgetc(input);
-				while(ch>='A'&&ch<='Z'){
-					term_str[i++] = ch;
-					ch = fgetc(input);
+				terms[i] = c;
+				i++;
+				c = fgetc(grammarfile);
+				while(isalpha(c) && !(c>='a' && c<='z')){
+					terms[i] = c;
+					i++;
+					c = fgetc(grammarfile);
 				}
-
-				term_str[i] = '\0';
+				terms[i] = '\0';
 								
-				Symbol_node* sym_node = create_symbol(find(term_str,0), 0);
+				Type_Sym_Node* sym_node = create_type_node(assign_sym(terms,0), 0);
 
-				//Adding Symbol to the list
-				curr_node = add_symbol_to_symbol_list(list, sym_node, curr_node);
-				
+				//Adding type_node to the list
+				curr_node = add_node_to_list(list, sym_node, curr_node);
 
-				if(ch == EOF || ch == '\n'){
-					if(ch==EOF)
-						end_of_file = 1;
+				if(c == EOF){
+					eof = 1;
 					break;
 				}
+				else if(c == '\n'){
+					break;
+				}
+				
 			}
 
-			else if(ch=='<'){
+			else if(c=='<'){
 				
-				char* non_term_str = (char*)malloc(sizeof(char)*MAX_SYMBOL_SIZE);
+				char* lhs_grm_rule = (char*)malloc(sizeof(char)*MX_NODE_SIZE);
 				int i = 0;
-				while((ch = fgetc(input))!='>'){
-					non_term_str[i++] = ch;
+				c = fgetc(grammarfile);
+				while(c!='>'){
+					lhs_grm_rule[i++] = c;
+					c = fgetc(grammarfile);
 				}
-
-				non_term_str[i] = '\0';
+				lhs_grm_rule[i] = '\0';
 				
-				Symbol_node* sym_node = create_symbol(find(non_term_str,1), 1);
+				Type_Sym_Node* sym_node = create_type_node(assign_sym(lhs_grm_rule,1), 1);
 
-				//Adding Symbol to the list
-				curr_node = add_symbol_to_symbol_list(list, sym_node, curr_node);
+				//Adding type node to the list
+				curr_node = add_node_to_list(list, sym_node, curr_node);
 				
 			}
 		}
 		
-		//Assigning the symbol list to the new_rule
+		//Assigning the list to the new grm_rule
 		new_rule->symbols = list;
 		
-		//Add new rule to the grammar
-		add_rule_to_grammar(grm,non_term,new_rule);		
+		//Add new grm_rule to the grammar
+		add_rule_to_grm(grm,non_term,new_rule);		
 	}
+	return grm;
 } 
 
 
-Grammar* initialize_grammar(){
+Grammar* init_grm(){
 	Grammar* grm = (Grammar*)malloc(sizeof(struct grammar));
-	grm -> no_of_rules = 0;
+	grm -> num_rules = 0;
 
 	//Total non-terminals will be equal to total number of rules
-	grm -> rules = (Rules**)malloc(sizeof(Rules*)*TOTAL_NON_TERMINALS);
-
-	for(int i = 0; i<TOTAL_NON_TERMINALS;i++){
-		grm->rules[i] = (Rules*)malloc(sizeof(struct rules));
+	grm -> rules = (GrmRules**)malloc(sizeof(GrmRules*)*NUM_NON_TERMS);
+	int i =0; 
+	while(i<NUM_NON_TERMS){
+		grm->rules[i] = (GrmRules*)malloc(sizeof(struct rules));
 		grm->rules[i]->head = NULL;
 		grm->rules[i]->length = 0;		
+		i++;
 	}
 
 	return grm;
 }
 
+// Add rule to grammar 
+void add_rule_to_grm(Grammar* grm, NonTerminal non_term, GrmRule* new_rule){
 
-Symbol_list* initialize_symbols_list(){
-	Symbol_list* list = (Symbol_list*)malloc(sizeof(Symbol_list));
-	list->head = NULL;
-	list->length = 0;
+	new_rule->next = grm->rules[non_term]->head;
+	grm->rules[non_term]->head = new_rule;
 
-	return list;
+	//Rule added to grammar, increase rule len 
+	grm->rules[non_term]->length++;
+
+	grm->num_rules++;
 }
 
-Rule* initialize_rule(int* next_rule_no){
-	Rule* new_rule = (Rule*)malloc(sizeof(Rule));
-	new_rule->next = NULL;
+// Initialise the grammar 
+GrmRule* init_rule(int* next_rule_no){
+	GrmRule* new_rule = (GrmRule*)malloc(sizeof(GrmRule));
 	new_rule->symbols = NULL;
-
+	new_rule->next = NULL;
+	
 	new_rule->rule_no = *next_rule_no; 
 	*next_rule_no = *next_rule_no+1;
 
 	return new_rule;
 }
 
-Symbol_node* create_symbol(int enum_int, int term_or_nonterm){
-	Symbol_node* sym_node = (Symbol_node*)malloc(sizeof(Symbol_node));
-	sym_node->next=NULL;
-	Symbol_node_type type;
-	if(term_or_nonterm==0){
-		type.terminal = (Tokentype)enum_int;
-	}
-	else{
-		type.nonterminal = (NonTerminal)enum_int;
-	}
-	sym_node->type = type;
-	sym_node->term_or_nonterm = term_or_nonterm;
 
-	return sym_node;
+Type_Node_list* init_type_node_list(){
+	Type_Node_list* list = (Type_Node_list*)malloc(sizeof(Type_Node_list));
+	list->head = NULL;
+	list->length = 0;
 
-
+	return list;
 }
 
-int find(char* str, int term_or_nonterm){
-	
-	//Terminal
-	if(term_or_nonterm==0){
-		for(int i=0;i<total_token_types;i++){
-			if(strcmp(str,TerminalMap[i])==0)
-				return i;
-		}
-	}
-
-	//Non terminal
-	else{
-		for(int i=0;i<TOTAL_NON_TERMINALS;i++){
-			if(strcmp(str,NonTerminalMap[i])==0)
-				return i;
-		}
-	}
-}
-
-
-Symbol_node* add_symbol_to_symbol_list(Symbol_list* list, Symbol_node* sym_node, Symbol_node* curr_node){
+Type_Sym_Node* add_node_to_list(Type_Node_list* list, Type_Sym_Node* sym_node, Type_Sym_Node* curr_node){
 	
 	//If initially the list is empty
-	if(curr_node==NULL){
+	if(!curr_node){
 		sym_node->next = list->head;
 		list->head = sym_node;
 		curr_node = list->head;
@@ -244,50 +230,78 @@ Symbol_node* add_symbol_to_symbol_list(Symbol_list* list, Symbol_node* sym_node,
 	return curr_node;
 }
 
-void add_rule_to_grammar(Grammar* grm, NonTerminal non_term, Rule* new_rule){
+Type_Sym_Node* create_type_node(int vale, int term_or_nonterm){
+	Type_Sym_Node* sym_node = (Type_Sym_Node*)malloc(sizeof(Type_Sym_Node));
+	sym_node->next=NULL;
+	Type_Node type;
+	if(term_or_nonterm){
+		type.nonterminal = (NonTerminal)vale;
+	}
+	else{
+		type.terminal = (Terminal)vale;
+	}
+	sym_node->type = type;
+	sym_node->term_or_nonterm = term_or_nonterm;
 
-	new_rule->next = grm->rules[non_term]->head;
-	grm->rules[non_term]->head = new_rule;
+	return sym_node;
 
-	//One more Rule added for the non terminal
-	grm->rules[non_term]->length++;
-
-	grm->no_of_rules++;
 }
+
+int assign_sym(char* str, int term_or_nonterm){
+	
+	//For Terminals
+	if(!term_or_nonterm){
+		int i=0;
+		while(i<TOKEN_TYPES){
+			if(strcmp(str,TerminalMap[i])==0)
+				return i;
+			i++;
+		}
+	}
+
+	//For Non terminals
+	else{
+		int i =0;
+		while(i<NUM_NON_TERMS){
+			if(strcmp(str,NonTerminalMap[i])==0)
+				return i;
+			i++;
+		}
+	}
+}
+
 
 void print_grammar(Grammar* grm){
 	printf("\n============================Printing Grammar===========================\n\n");
 
-	for(int i=0;i<TOTAL_NON_TERMINALS;i++){
-		
-		printf("%d.  <%s> ===> ",(i+1), NonTerminalMap[i]);
+	int i=0;
+	while(i<NUM_NON_TERMS){		
+		printf("%d.  <%s> ---> ",(i+1), NonTerminalMap[i]);
 
-		Rules* rules = grm->rules[i];
-
-		Rule* temp = rules->head;
-
-		for(int j = 0;j< rules->length;j++){
+		GrmRules* rules = grm->rules[i];
+		GrmRule* temp_rule = rules->head;
+		int j=0;
+		while(j<rules->length){
 			if(j!=0)
 				printf("| ");
 
-			Symbol_list* symbols = temp->symbols;
-			Symbol_node* temp2 = symbols->head;
+			Type_Node_list* nodes = temp_rule->symbols;
+			Type_Sym_Node* temp_node = nodes->head;
 
-			for(int k=0;k<symbols->length;k++){
-				if(temp2->term_or_nonterm==0)
-					printf("%s", TerminalMap[temp2->type.terminal]);
+			for(int k=0;k<nodes->length;k++){
+				if(!temp_node->term_or_nonterm)
+					printf("<%s> ", NonTerminalMap[temp_node->type.nonterminal]);
 				else
-					printf("<%s>", NonTerminalMap[temp2->type.nonterminal]);
+					printf("%s ", TerminalMap[temp_node->type.terminal]);
 
-				printf(" ");
-				temp2 = temp2->next;
+				temp_node = temp_node->next;
 			}
-
-			
-			temp = temp->next;
+			temp_rule = temp_rule->next;
+			j++;
 		}
 		printf("\n");
+		i++;
 	}
-	printf("\n========================Grammar Over====================\n");
+	printf("\n========================End of Grammar====================\n");
 	
 }

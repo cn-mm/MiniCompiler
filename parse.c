@@ -30,9 +30,9 @@ char* NonTerminalMapPar[] = {
 };
 
 
-void push_rule_reverse_ruchi(Rule * rule, AuxStack * as, MainStack * ms, Children * children )
+void push_rule_reverse_ruchi(GrmRule * grm_rule, AuxStack * as, MainStack * ms, Children * children )
     { 
-        // printf("Inside push rule reverse \n ");
+        // printf("Inside push grm_rule reverse \n ");
 
         // printf("For aux stack \n");
         TreeNode*temp=children->head;
@@ -84,19 +84,19 @@ bool match(Token_s * lookahead , TreeNode * tos)
 }
 
 
-int createParseTree()
+TreeNode * createParseTree(char * testcaseaddress)
 {
     char* grammar_file = "grammar.txt";
 	Grammar* grm = readGrammar(grammar_file);
 	print_grammar( grm);
-    tokenstream * s = tokenizeSourceCode("Test_Cases/t4.txt");
+    tokenstream * s = tokenizeSourceCode(testcaseaddress);
     
     Token_s * token_stream_pointer = s->head; // points to current location in the token stream 
     
-    Symbol_node_type start_type;
+    Type_Node start_type;
     start_type.terminal = DOLLAR;
 
-    Symbol_node_type program_start;
+    Type_Node program_start;
     program_start.nonterminal= program;
 
     TreeNode* start = initialize_TreeNode(NULL,1, 0, start_type); // Pushed dollar, a terminal
@@ -109,12 +109,14 @@ int createParseTree()
     // Let the pushing and popping begin 
     push_ms(MS, start);
     push_ms(MS,program);
+
+    // printf("I am here");
+
     parsing(MS, AS, grm, token_stream_pointer);
     // if(program->child==NULL)
     // 	printf("It is NULL");
-    preordertraversal(program);
-     
-    return 0;
+    // preordertraversal(program);
+    return program;
 }
 
 bool parsing(MainStack * ms, AuxStack * as, Grammar * grm, Token_s * lookahead)
@@ -172,9 +174,9 @@ bool parsing(MainStack * ms, AuxStack * as, Grammar * grm, Token_s * lookahead)
         {
 		    // printf("\n Enter parsing");
             int i = tos->type.nonterminal; // will always be a non terminal CHECK &&&&&&&&&&&&&&&&&&&&&&&&&&&&
-            Rules * rules = grm->rules[i];
+            GrmRules * rules = grm->rules[i];
             // traverse all rules.
-            Rule * rule = rules->head;
+            GrmRule * grm_rule = rules->head;
 
 
     	    for(int j = 0; j<rules->length; j++)
@@ -182,9 +184,9 @@ bool parsing(MainStack * ms, AuxStack * as, Grammar * grm, Token_s * lookahead)
 		    TreeNode * parent =tos;
 		    TreeNode * nothing = pop_ms(ms);
         	TreeNode * popUntil= topofMainStack(ms);
-		    Children * children = makeChildList(parent, rule);
+		    Children * children = makeChildList(parent, grm_rule);
 		    Token_s* temp_look=lookahead;
-		    push_rule_reverse_ruchi(rule, as, ms, children);
+		    push_rule_reverse_ruchi(grm_rule, as, ms, children);
 		
             bool ruleWorks = parsing(ms, as, grm, temp_look);
             if(!ruleWorks)
@@ -207,8 +209,8 @@ bool parsing(MainStack * ms, AuxStack * as, Grammar * grm, Token_s * lookahead)
                 //     } }
 		    return true;
 		}
-		//move rule 
-		rule = rule->next;
+		//move grm_rule 
+		grm_rule = grm_rule->next;
 
 	    }
 	    return false;

@@ -128,8 +128,6 @@ void pop_all_as(AuxStack * as){
     }
 }
 
-// check if program is over
-int isTopDOLLAR(MainStack* ms);
 
 // return top of main stack
 TreeNode * topofMainStack(MainStack * ms){
@@ -139,23 +137,23 @@ TreeNode * topofMainStack(MainStack * ms){
     return tn;
 }
 
-void push_rule_reverse(Rule * rule, AuxStack * as, MainStack *ms){
+void push_rule_reverse(GrmRule * grm_rule, AuxStack * as, MainStack *ms){
 
-    Symbol_list* symbols = rule->symbols;
-	Symbol_node* temp2 = symbols->head;
+    Type_Node_list* symbols = grm_rule->symbols;
+	Type_Sym_Node* temp2 = symbols->head;
 
 	for(int k=0; k<symbols->length ;k++){
 	
         TreeNode * tn;
 		if(temp2->term_or_nonterm==0 && temp2->type.terminal!=EPSILON) {
 		// if terminal 
-            tn = initialize_TreeNode(NULL, rule->rule_no, 0, temp2->type);
+            tn = initialize_TreeNode(NULL, grm_rule->rule_no, 0, temp2->type);
             
 			// initialise tree node with term 
             push_as(as,tn);
             } // push in aux stack
 		else if(temp2->term_or_nonterm==1){
-            tn = initialize_TreeNode(NULL, rule->rule_no, 1, temp2->type);
+            tn = initialize_TreeNode(NULL, grm_rule->rule_no, 1, temp2->type);
             // initialise tree non with non term 
             push_as(as,tn);
            }
@@ -163,7 +161,7 @@ void push_rule_reverse(Rule * rule, AuxStack * as, MainStack *ms){
             	printf("Epsilon is thereeeee");
             // push into aux stack
 			
-	temp2 = temp2->next; // move ahead temp2 points to all symbol nodes in a rule 
+	temp2 = temp2->next; // move ahead temp2 points to all symbol nodes in a grm_rule 
 	}
 
     while(!auxstackisEmpty(as)){

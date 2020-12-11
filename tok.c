@@ -27,20 +27,6 @@ char* TypeTok[] = {
 	"program", "size", "(", ")", "{", "}", "[", "]", "..", "EPSILON", ":", ";", "ID", "IDB", "NUM", "integer", "boolean", "real", "array", "jagged", "declare", "list", "of", "variables", "R1", "values", "=", "+", "-", "*", "/", "&&&", "|||","$"
 };
 
-// typedef enum{
-// 	PROGRAM, SZ, OP, CL, COP, CCL, SQOP, SQCL, DOTS, EPSILON, COLON, SEMICOLON, ID, IDB, NUM, INT, BOOLEAN, REAL, ARRAY, JAGGED, DEC, LIST, OF, VARIABLES, R, VALUES, EQUALS, PLUS, MINUS, MUL, DIV, AND, OR,DOLLAR 
-// }Tokentype;
-
-
-// char* TerminalMap[] = {
-// 	"PROGRAM", "SZ", "OP", "CL", "COP", "CCL", "SQOP", "SQCL", "DOTS", "EPSILON", "COLON", "SEMICOLON", "ID", "IDB", "NUM", "INT", "BOOLEAN", "REAL", "ARRAY", "JAGGED", "DEC", "LIST", "OF", "VARIABLES", "R", "VALUES", "EQUALS", "PLUS", "MINUS", "MUL", "DIV", "AND", "OR","DOLLAR"
-// };
-
-
-// char* Type[] = {
-// 	"program", "size", "(", ")", "{", "}", "[", "]", "...", "EPSILON", ":", ";", "ID", "IDB", "NUM", "integer", "boolean", "real", "array", "jagged", "declare", "list", "of", "variables", "R1", "values", "=", "+", "-", "*", "/", "&&&", "|||","$"
-// };
-
 // 14 keywords
 char KEYWORDS[][100]= { 
     "program","declare","list","of","integer","boolean","real","array","variables","jagged","size","values","integer","R1"  
@@ -251,8 +237,6 @@ void printlinklist(struct token_s * temp)
 
     }
     
-    
-
     return ;
 }
 
